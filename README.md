@@ -77,56 +77,38 @@ Client-server chat applications are foundational to real-time communication over
 ## Client Program:
 ```
 import socket
-s = socket.socket()
-host = input(str('Enter hostname or host IP : '))
-port= 8080
-s.connect((host, port))
-print('Connected to chat server')
-while 1:
-    incoming_message = s.recv(1024)
-    incoming_message =incoming_message.decode() 
-    print(' Server : ',incoming_message) 
-    print()
-    message = input(str('>> '))
-    message =message.encode()
-    s.send(message)
-    print('Sent')
-    print()
+from datetime import datetime
+s=socket.socket()
+s.bind(('localhost',8000))
+s.listen(5)
+c,addr=s.accept()
+print("Client Address : ",addr)
+now = datetime.now()
+c.send(now.strftime("%d/%m/%Y %H:%M:%S").encode())
+ack=c.recv(1024).decode()
+if ack:
+    print(ack)
+c.close()
 ```
 
 ## Server Program:
 ```
 import socket
-s = socket.socket()
-host = socket.gethostname()
-print(' Server will start on host : ',host) 
-port = 8080
-s.bind((host, port))
-print()
-print('Waiting for connection')
-print()
-s.listen(1)
-conn, addr = s.accept()
-print(addr, ' Has connected to the server') 
-print()
-while 1:
-    message =input(str('>> '))
-    message =message.encode()
-    conn.send(message) 
-    print('Sent')
-    print()
-    incoming_message = conn.recv(1024)
-    incoming_message = incoming_message.decode()
-    print(' Client : ',incoming_message) 
-    print()
+s=socket.socket()
+s.connect(('localhost',8000))
+print(s.getsockname())
+print(s.recv(1024).decode())
+s.send("acknowledgement recived from the server".encode())
 ```
 
 ## Output:
+<img width="956" height="536" alt="image" src="https://github.com/user-attachments/assets/b9ed1bb4-4382-4714-9cb2-a76a85f64fb5" />
+<img width="1904" height="1069" alt="Screenshot 2026-05-19 083740" src="https://github.com/user-attachments/assets/f19f72af-827f-409e-aa66-d30493fcd354" />
 
 
-<img width="1626" height="982" alt="image" src="https://github.com/user-attachments/assets/1fcc328f-cef8-4fb4-940e-63ca07084dba" />
 
-<img width="1710" height="972" alt="image" src="https://github.com/user-attachments/assets/41a2d8cf-9f7b-4f6e-a0a7-760fbe98eb6b" />
+
+
 
 
 ## Result:
